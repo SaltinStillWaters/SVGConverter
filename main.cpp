@@ -15,6 +15,9 @@
 
 /**
  * Call this function to convert an SVG to OpenGL coordinates.
+ * The format of the output is: x, y, r, g, b, a.
+ * Complex SVGs utilizing new features may not be supported. Test first please.
+ * 
  * @param SVGFilename filename of your SVG.
  * @param resultFilename filename of where you want the outputted vertices to be stored in. Must be a .txt file.
  * @param unit unit of your output. Should be one of: 'px', 'pt', 'pc' 'mm', 'cm', or 'in'
