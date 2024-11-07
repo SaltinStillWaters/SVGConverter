@@ -1,9 +1,10 @@
+//YES you need to include all of these...
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #define NANOSVG_ALL_COLOR_KEYWORDS	// Include full list of color keywords.
 #define NANOSVG_IMPLEMENTATION		// Expands implementation
-#include "../nanosvg/src/nanosvg.h"
+#include "nanosvg.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -90,6 +91,5 @@ void SVGToGL(const char* SVGFilename, const char* resultFilename, const char* un
     file.close();
     
     
-    // Delete
     nsvgDelete(image);
 }
