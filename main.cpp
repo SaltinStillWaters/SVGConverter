@@ -18,6 +18,10 @@
  * The format of the output is: x, y, r, g, b, a.
  * Complex SVGs utilizing new features may not be supported. Test first please.
  * 
+ * Also note that the output will try to occupy the whole OpenGL window.
+ * This means we have two options: scale and reposition it here (not yet implemented),
+ * or transform it in openGL (recommended way according to what I've read, but I'm not sure).
+ * 
  * @param SVGFilename filename of your SVG.
  * @param resultFilename filename of where you want the outputted vertices to be stored in. Must be a .txt file.
  * @param unit unit of your output. Should be one of: 'px', 'pt', 'pc' 'mm', 'cm', or 'in'
