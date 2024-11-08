@@ -13,42 +13,43 @@
 #include <stdexcept>
 #include <filesystem>
 
+#define DEFAULT -1
+
 /**
  * Call this function to convert an SVG to OpenGL coordinates.
  * The format of the output is: x, y, r, g, b, a.
  * Complex SVGs utilizing new features may not be supported. Test first please.
  * 
- * Also note that the output will try to occupy the whole OpenGL window.
- * This means we have two options: scale and reposition it here (not yet implemented),
- * or transform it in openGL (recommended way according to what I've read, but I'm not sure).
- * 
  * @param SVGFilename filename of your SVG.
  * @param resultFilename filename of where you want the outputted vertices to be stored in. Must be a .txt file.
  * @param unit unit of your output. Should be one of: 'px', 'pt', 'pc' 'mm', 'cm', or 'in'
  * @param dpi dpi of the output. 96 is the recommended default of the nanosvg author/s.
+ * @param xOffset xOffset of each vertices in OpenGL coordinates. A value of 1 will move all the vertices to the right by 1 unit
+ * @param yOffset yOffset of each vertices in OpenGL coordinates. A value of 1 will move all the vertices up by 1 unit
+ * @param scale the resulting x and y coordinates will be divided by this value. So a value of 1 will cover the entire OpenGL window, while a value of 0.5 will cover half of it.
  */
-void SVGToGL(const char* SVGFilename, const char* resultFilename = "vertices.txt", const char* unit = "px", float dpi = 96);
+void SVGToGL(const char* SVGFilename, const char* resultFilename = "vertices.txt", const char* unit = "px", float dpi = 96, float xOffset = 0, float yOffset = 0, float scale = 1);
 
 
 //This is literally how you use it:
 int main() {
-    SVGToGL("test.svg");
+    SVGToGL("test.svg", "vertices.txt", "px", 96, 1.f, 1.f, .5f);
 
     return 0;
 }
 
 
 //no need to check, unless you want to understand how it works
-void linkComponents(float* result, float x, float y, float maxWidth, float maxHeight, float r, float g, float b, float a) {
-    result[0] = 2 * (x/maxWidth) - 1;
-    result[1] = 1 - 2 * (y/maxHeight);
+void linkComponents(float xOffset, float yOffset, float scale, float* result, float x, float y, float maxWidth, float maxHeight, float r, float g, float b, float a) {
+    result[0] = ((2 * (x/maxWidth) - 1) + xOffset) * scale;
+    result[1] = ((1 - 2 * (y/maxHeight)) + yOffset) * scale;
     result[2] = r;
     result[3] = g;
     result[4] = b;
     result[5] = a;
 }
 
-void SVGToGL(const char* SVGFilename, const char* resultFilename, const char* unit, float dpi) {
+void SVGToGL(const char* SVGFilename, const char* resultFilename, const char* unit, float dpi, float xOffset, float yOffset, float scale) {
     std::filesystem::path SVGPath = SVGFilename;
     if (SVGPath.extension() != ".svg") {
         throw std::invalid_argument("Argument: SVGFilename must have a .svg extension");
@@ -89,7 +90,7 @@ void SVGToGL(const char* SVGFilename, const char* resultFilename, const char* un
                 float* p = &path->pts[i*2];
 
                 float output[6]; 
-                linkComponents(output, p[0], p[1], maxWidth, maxHeight, r, g, b, a);
+                linkComponents(xOffset, yOffset, scale, output, p[0], p[1], maxWidth, maxHeight, r, g, b, a);
 
                 file << output[0] << " " << output[1] << " " << output[2] << " " << output[3] << " " << output[4] << " " << output[5] << "\n";
             }
