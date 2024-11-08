@@ -33,7 +33,7 @@ void SVGToGL(const char* SVGFilename, const char* resultFilename = "vertices.txt
 
 //This is literally how you use it:
 int main() {
-    SVGToGL("test.svg", "vertices.txt", "px", 96, 1.f, 1.f, .5f);
+    SVGToGL("bird1_mapped.svg", "vertices.txt", "px", 96, 1.f, 1.f, .5f);
 
     return 0;
 }
